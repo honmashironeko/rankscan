@@ -1,4 +1,4 @@
-![image](https://github.com/honmashironeko/rankscan/assets/139044047/32f52d8d-befd-4b9c-99a7-037b058e005c)# 工具介绍
+# 工具介绍
 
 - 支持子域名、主域名批量查询权重。
 - 支持提取主域名后，快速获取其他子域名。
@@ -26,8 +26,6 @@
 
 - ![image](https://github.com/honmashironeko/rankscan/assets/139044047/d55e3f0b-6c2a-4858-9546-8160d4c4887a)
 
-
-
 - 执行基础功能：`python RANKscan-v0.2.py -f domain.txt` 这样将会查询您提供的 TXT 文件中所有域名的权重。
 
 - 执行进阶功能:`python RANKscan-v0.2.py -f domain.txt -key XXXXX` 这样将会自动反查子域名，并在后续步骤中查询权重。
@@ -35,9 +33,9 @@
 
 # 工具截图
 
-![image](https://github.com/honmashironeko/rankscan/assets/139044047/ef54705b-d3f5-4609-bedd-fe0cfb2bd3ff)
+![image](https://github.com/honmashironeko/rankscan/assets/139044047/ebdd71b8-157e-467c-bca1-bcc025f3526a)
 
-
+![Clip_2024-05-27_17-00-05](https://github.com/honmashironeko/rankscan/assets/139044047/e17f1ddd-2e79-4b88-9d29-3fd699196325)
 
 
 # 为爱发电
