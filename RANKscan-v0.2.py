@@ -115,8 +115,8 @@ def main(file_path, zoomeye_key, pages):
         print(f"文件路径错误：{e}")
         return
     df = process_domains(listdomain, zoomeye_key, pages)
-    df.to_excel('RANKscan.xlsx', index=False)
-    print("查询完成，结果保存在RANKscan.xlsx")
+    df.to_excel('Rankscan.xlsx', index=False)
+    print("查询完成，结果保存在Rankscan.xlsx")
 
 def update_module():
     try:
@@ -165,12 +165,12 @@ def print_rankscan_banner():
     print("\t\t\t\t\t微信公众号:樱花庄的本间白猫")
     print("\t\t\t\t博客地址：https://y.shironekosan.cn")
     print("=" * 67)
-    print("\t\tRANKscan开始执行")
+    print("\t\tRankscan开始执行")
 
 if __name__ == "__main__":
     update_module()
     print_rankscan_banner()
-    parser = argparse.ArgumentParser(description='RANKscan由本间白猫开发,旨在快速查询域名及子域名的百度权重、移动权重、谷歌权重')
+    parser = argparse.ArgumentParser(description='Rankscan由本间白猫开发,旨在快速查询域名及子域名的百度权重、移动权重、谷歌权重')
     parser.add_argument('-f', dest='file_path', required=True, help='指定使用的路径文件 -f url.txt')
     parser.add_argument('-key', dest='zoomeye_key', help='指定ZoomEye的API-KEY认证信息 -key API-KEY')
     parser.add_argument('-pages', dest='pages', help='指定查询的页数,一页30条子域名,默认1页 -pages 5')
