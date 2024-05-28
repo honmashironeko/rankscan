@@ -17,40 +17,47 @@ def detect_domain(text):
     return results
 
 def aizhan_rank(domain):
-    brrank = " "
-    mbrrank = " "
-    prrank = " "
+    brrank = mbrrank = prrank = ' '
     url = f"https://www.aizhan.com/cha/{domain}/"
     try:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
-            pattern = r'<img src="//statics\.aizhan\.com/images/br/(\d+)\.png"'
-            result1 = re.search(pattern, response.text)
-            pattern = r'<img src="//statics.aizhan.com/images/mbr/(\d+).png"'
-            result2 = re.search(pattern, response.text)
-            pattern = r'<img src="//statics.aizhan.com/images/pr/(\d+).png"'
-            result3 = re.search(pattern, response.text)
-            if result1 or result2 or result3:
-                brrank = result1.group(1) if result1 and result1.group(1).isdigit() and 1 <= int(result1.group(1)) <= 10 else ' '
-                mbrrank = result2.group(1) if result2 and result2.group(1).isdigit() and 1 <= int(result2.group(1)) <= 10 else ' '
-                prrank = result3.group(1) if result3 and result3.group(1).isdigit() and 1 <= int(result3.group(1)) <= 10 else ' '
-                if brrank != ' ' or mbrrank != ' ' or prrank != ' ':
-                    print(f"{domain.ljust(35)}百度权重：{brrank.ljust(5)}移动权重：{mbrrank.ljust(5)}谷歌权重：{prrank}")
+            patterns = {
+                'brrank': r'<img src="//statics\.aizhan\.com/images/br/(\d+)\.png"',
+                'mbrrank': r'<img src="//statics\.aizhan\.com/images/mbr/(\d+)\.png"',
+                'prrank': r'<img src="//statics\.aizhan\.com/images/pr/(\d+)\.png"'
+            }
+            ranks = {'brrank': ' ', 'mbrrank': ' ', 'prrank': ' '}
+            for rank_type, pattern in patterns.items():
+                match = re.search(pattern, response.text)
+                if match and match.group(1).isdigit() and 1 <= int(match.group(1)) <= 10:
+                    ranks[rank_type] = match.group(1)
+            brrank, mbrrank, prrank = ranks['brrank'], ranks['mbrrank'], ranks['prrank']
+            if brrank != ' ' or mbrrank != ' ' or prrank != ' ':
+                print(f"{domain.ljust(35)}百度权重：{brrank.ljust(5)}移动权重：{mbrrank.ljust(5)}谷歌权重：{prrank}")
+            else:
+                brrank = mbrrank = prrank = 0
+        else:
+            brrank = mbrrank = prrank = 0
     except:
         print("爱站请求失败，请检查网络")
+        brrank = mbrrank = prrank = 0
+
     return brrank, mbrrank, prrank
 
 def resources_zoomeye(zoomeye_key):
-    url = f'https://api.zoomeye.org/resources-info'
+    url = 'https://api.zoomeye.org/resources-info'
     headers = {"API-KEY" : zoomeye_key}
-    response = requests.get(url,headers=headers, timeout=10)
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        if data.get('quota_info', {}).get('remain_total_quota') < 30:
-            return 0
-        else:
-            return data.get('quota_info', {}).get('remain_total_quota')
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            remain_quota = data.get('quota_info', {}).get('remain_total_quota', 0)
+            return remain_quota if remain_quota >= 30 else 0
+    except Exception as e:
+        print(f"ZoomEye请求失败: {e}")
+    return 0
 
 def get_subdomain(domain,zoomeye_key,pages=None):
     global control
@@ -75,14 +82,37 @@ def get_subdomain(domain,zoomeye_key,pages=None):
     return names
 
 def fetch_subdomain_ranks(subdomain):
-    brrank, mbrrank,prrank = aizhan_rank(subdomain)
-    return {'域名': subdomain, '百度权重': brrank, '移动权重': mbrrank, '谷歌权重': prrank}
+    def get_valid_rank(rank):
+        try:
+            rank_int = int(rank)
+            if 1 <= rank_int <= 10:
+                return rank_int
+        except ValueError:
+            pass
+        return 0
+
+    brrank, mbrrank, prrank = aizhan_rank(subdomain)
+    
+    brrank_valid = get_valid_rank(brrank)
+    mbrrank_valid = get_valid_rank(mbrrank)
+    prrank_valid = get_valid_rank(prrank)
+    
+    if brrank_valid == 0 and mbrrank_valid == 0 and prrank_valid == 0:
+        return {'域名': subdomain, '百度权重': brrank_valid, '移动权重': mbrrank_valid, '谷歌权重': prrank_valid}, True
+ 
+    return {'域名': subdomain, '百度权重': brrank_valid, '移动权重': mbrrank_valid, '谷歌权重': prrank_valid}, False
+
+
+
 
 control = True
-def process_domains(listdomain, zoomeye_key, pages):
+def process_domains(listdomain, zoomeye_key, pages, thread):
     domain_cache = {}
     df = pd.DataFrame(columns=['域名', '百度权重', '移动权重', '谷歌权重'])
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    df_not_ranked = pd.DataFrame(columns=['域名', '百度权重', '移动权重', '谷歌权重'])
+    query_failed = []
+
+    with ThreadPoolExecutor(max_workers=int(thread)) as executor:
         future_to_subdomain = {}
         for domain in listdomain:
             domain = detect_domain(domain)[0]
@@ -92,35 +122,53 @@ def process_domains(listdomain, zoomeye_key, pages):
                     subdomain_list = []
                     if domaindj != '':
                         if control == True:
-                            subdomain_list = get_subdomain(domaindj, zoomeye_key, pages)
+                            try:
+                                subdomain_list = get_subdomain(domaindj, zoomeye_key, pages)
+                            except:
+                                query_failed.append(domain)
+                                continue
+                        else:
+                            query_failed.append(domain)
                     subdomain_list.append(domain)
                     domain_cache[domaindj] = subdomain_list
                 else:
-                    subdomain_list = domain_cache[domaindj]     
+                    subdomain_list = domain_cache[domaindj]
             else:
                 subdomain_list = [domain]
             for subdomain in subdomain_list:
                 future = executor.submit(fetch_subdomain_ranks, subdomain)
                 future_to_subdomain[future] = subdomain
+                
         for future in as_completed(future_to_subdomain):
-            result = future.result()
-            df = pd.concat([df, pd.DataFrame(result, index=[0])], ignore_index=True)
-    return df
+            result, is_not_ranked = future.result()
+            if is_not_ranked:
+                df_not_ranked = pd.concat([df_not_ranked, pd.DataFrame(result, index=[0])], ignore_index=True)
+            else:
+                df = pd.concat([df, pd.DataFrame(result, index=[0])], ignore_index=True)
+                
+    return df, df_not_ranked, query_failed
 
-def main(file_path, zoomeye_key, pages):
+def main(file_path, zoomeye_key, pages, thread):
     try:
         with open(file_path, 'r') as f:
             listdomain = f.read().splitlines()
     except FileNotFoundError as e:
         print(f"文件路径错误：{e}")
         return
-    df = process_domains(listdomain, zoomeye_key, pages)
-    df.to_excel('Rankscan.xlsx', index=False)
-    print("查询完成，结果保存在Rankscan.xlsx")
+    
+    df, df_not_ranked, query_failed = process_domains(listdomain, zoomeye_key, pages, thread)
+    df.to_excel('Rank_Results.xlsx', index=False)
+    df_not_ranked.to_excel('Not_Rank.xlsx', index=False)
+    if query_failed:
+        with open('query_failed.txt', 'w') as f:
+            for domain in query_failed:
+                f.write(f"{domain}\n")
+
+    print("查询完成，结果保存在Rank_Results.xlsx、Not_Rank.xlsx和query_failed.txt")
 
 def update_module():
     try:
-        icpscan_time = "2024-05-27"
+        icpscan_time = "2024-05-28"
         url = "https://y.shironekosan.cn/1.html"
         response = requests.get(url)
         pattern = r'<div\s+class="nc-light-gallery"\s+id="image_container">(.*?)</div>'
@@ -161,7 +209,7 @@ def print_rankscan_banner():
  | | \ \  / ____ \| |\  | . \   ____) | |____ / ____ \| |\  |
  |_|  \_\/_/    \_\_| \_|_|\_\ |_____/ \_____/_/    \_\_| \_|                                                           
 """)
-    print("\t\t\t\t\t\t\tVersion:0.2")
+    print("\t\t\t\t\t\t\tVersion:0.3")
     print("\t\t\t\t\t微信公众号:樱花庄的本间白猫")
     print("\t\t\t\t博客地址：https://y.shironekosan.cn")
     print("=" * 67)
@@ -174,8 +222,12 @@ if __name__ == "__main__":
     parser.add_argument('-f', dest='file_path', required=True, help='指定使用的路径文件 -f url.txt')
     parser.add_argument('-key', dest='zoomeye_key', help='指定ZoomEye的API-KEY认证信息 -key API-KEY')
     parser.add_argument('-pages', dest='pages', help='指定查询的页数,一页30条子域名,默认1页 -pages 5')
+    parser.add_argument('-t', dest='thread', help='指定线程数,默认10 -thread 10')
     args = parser.parse_args()
     file_path = args.file_path
     zoomeye_key = args.zoomeye_key
     pages = args.pages
-    main(file_path, zoomeye_key, pages)
+    thread = args.thread
+    if thread is None:
+        thread = 10
+    main(file_path, zoomeye_key, pages, thread)

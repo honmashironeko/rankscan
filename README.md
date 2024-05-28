@@ -2,9 +2,10 @@
 
 - 支持子域名、主域名批量查询权重。
 - 支持提取主域名后，快速获取其他子域名。
-- 支持百度、移动、谷歌三种权重都为 0 时，不显示在CMD中。
-- 将结果自动保存在 Excel 中，方便后续操作和记录。
-- 白嫖余额不足时只停止子域名查询，并记录剩余未查询的域名。（待完成）
+- 支持百度、移动、谷歌三种权重都为 0 时，不显示在CMD中便于阅读。
+- 将有权重和没有权重的结果分别自动保存在 Excel 中，方便后续操作和记录。
+- 白嫖余额不足时只停止子域名查询，并记录剩余未查询的域名。
+- 增加线程数控制，可根据网络环境提高运行效率，默认 10 线程。
 - 与 [icpscan](https://github.com/honmashironeko/icpscan) 工具可以联合使用，快速获取备案归属及权重信息。（目前手动，自动化待完成）
 
 # 下载地址
@@ -22,36 +23,37 @@
 
 - 安装相关依赖库：`pip install -r requirements.txt`
 
-- 查看工具帮助：`python RANKscan-v0.2.py -h`
+- 查看工具帮助：`python RANKscan-v0.3.py -h`
 
-- ![image](https://github.com/honmashironeko/rankscan/assets/139044047/d55e3f0b-6c2a-4858-9546-8160d4c4887a)
+  
 
-- 执行基础功能：`python RANKscan-v0.2.py -f domain.txt` 这样将会查询您提供的 TXT 文件中所有域名的权重。
+- 执行基础功能：`python RANKscan-v0.3.py -f domain.txt` 这样将会查询您提供的 TXT 文件中所有域名的权重。
 
-- 执行进阶功能:`python RANKscan-v0.2.py -f domain.txt -key XXXXX` 这样将会自动反查子域名，并在后续步骤中查询权重。
-
+- 执行进阶功能:`python RANKscan-v0.3.py -f domain.txt -key XXXXX` 这样将会自动反查子域名，并在后续步骤中查询权重。
 
 # 工具截图
 
-![image](https://github.com/honmashironeko/rankscan/assets/139044047/ebdd71b8-157e-467c-bca1-bcc025f3526a)
-
-![Clip_2024-05-27_17-00-05](https://github.com/honmashironeko/rankscan/assets/139044047/e17f1ddd-2e79-4b88-9d29-3fd699196325)
 
 
 # 为爱发电
 
 本项目及其他项目并不要求大家付费，但是应部分师傅好意，因此留下打赏码，如果您觉得工具好用，欢迎大家打赏一下，支持作者~
 
-![img](https://private-user-images.githubusercontent.com/139044047/331065651-50ffc1be-6c2a-45cc-8e19-4e8606e96f60.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTY4MDA3NjQsIm5iZiI6MTcxNjgwMDQ2NCwicGF0aCI6Ii8xMzkwNDQwNDcvMzMxMDY1NjUxLTUwZmZjMWJlLTZjMmEtNDVjYy04ZTE5LTRlODYwNmU5NmY2MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTI3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUyN1QwOTAxMDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yMDRkYmM1NWZiNWNmMDRjZmZlN2IwN2Q1NDkxZWU1ZThiMGY2Yjg4ODY0OGMxMjliMTgwOTk4NzFkOTViMDRjJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.BpBCk1Aeyanh9F1kChMvxtRuJlPAwY7E-XEMwaeLvj4)
 
-![img](https://private-user-images.githubusercontent.com/139044047/331065673-ffa9661d-caaf-4840-b95d-3309d636fce9.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTY4MDA3NjQsIm5iZiI6MTcxNjgwMDQ2NCwicGF0aCI6Ii8xMzkwNDQwNDcvMzMxMDY1NjczLWZmYTk2NjFkLWNhYWYtNDg0MC1iOTVkLTMzMDlkNjM2ZmNlOS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTI3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUyN1QwOTAxMDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wODhiYWI3MTc3ZDdkNjNjOTM4YmFlMmVmYzkyMGMyMWM1NzY5Zjc5OGQxZGNmZmYzYjlkZjk5ZWFjZmY5NzAyJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Rt21MhJZu2AOD_AFr37GtVyui0nMsMGKmgWEUfyO97g)
 
 # 联系方式
 
-![樱花庄_搜索联合传播样式-标准色版](https://github.com/honmashironeko/rankscan/assets/139044047/cb3d32a8-1319-4c56-8718-e13664a92dbf)
+
 
 
 # 更新日志
+
+**2024年5月28日**
+
+1. 新增功能白嫖余额不足时只停止子域名查询，并记录剩余未查询的域名。
+2. 增加没有权重的结果保存到 Excel 表格中。
+3. 增加线程数控制，可根据网络环境提高运行效率，默认 10 线程。
+4. 优化代码运行逻辑。
 
 **2024年5月27日**
 
