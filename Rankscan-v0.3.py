@@ -89,7 +89,7 @@ def fetch_subdomain_ranks(subdomain):
                 return rank_int
         except ValueError:
             pass
-        return 0
+        return " "
 
     brrank, mbrrank, prrank = aizhan_rank(subdomain)
     
@@ -97,7 +97,7 @@ def fetch_subdomain_ranks(subdomain):
     mbrrank_valid = get_valid_rank(mbrrank)
     prrank_valid = get_valid_rank(prrank)
     
-    if brrank_valid == 0 and mbrrank_valid == 0 and prrank_valid == 0:
+    if brrank_valid == " " and mbrrank_valid == " " and prrank_valid == " ":
         return {'域名': subdomain, '百度权重': brrank_valid, '移动权重': mbrrank_valid, '谷歌权重': prrank_valid}, True
  
     return {'域名': subdomain, '百度权重': brrank_valid, '移动权重': mbrrank_valid, '谷歌权重': prrank_valid}, False
