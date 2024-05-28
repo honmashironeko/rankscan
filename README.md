@@ -43,10 +43,6 @@
 
 本项目及其他项目并不要求大家付费，但是应部分师傅好意，因此留下打赏码，如果您觉得工具好用，欢迎大家打赏一下，支持作者~
 
-![1716865731678](https://github.com/honmashironeko/rankscan/assets/139044047/05c6c5fd-fb66-4b9c-b781-95ebd302c85b)
-
-![1716865745990](https://github.com/honmashironeko/rankscan/assets/139044047/b4c0ec4d-c2ef-46cf-8366-d03a5d816048)
-
 # 联系方式
 
 ![樱花庄_搜索联合传播样式-标准色版](https://github.com/honmashironeko/rankscan/assets/139044047/968215a8-1b3e-4e43-bbc5-c36a907b3e82)
