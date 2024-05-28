@@ -16,7 +16,6 @@
 
 - 百度网盘：https://pan.baidu.com/s/1C9LVC9aiaQeYFSj_2mWH1w?pwd=13r5/
 
-
 **求 Github 点一下 Star，非常感谢您**
 
 # 使用帮助
@@ -25,7 +24,8 @@
 
 - 查看工具帮助：`python RANKscan-v0.3.py -h`
 
-  
+  ![Clip_2024-05-28_11-05-22](https://github.com/honmashironeko/rankscan/assets/139044047/70392207-acfe-4f78-bd6f-a4efd092412e)
+
 
 - 执行基础功能：`python RANKscan-v0.3.py -f domain.txt` 这样将会查询您提供的 TXT 文件中所有域名的权重。
 
@@ -33,18 +33,25 @@
 
 # 工具截图
 
+![Clip_2024-05-28_11-05-51](https://github.com/honmashironeko/rankscan/assets/139044047/f3986acb-509c-49f0-a1a7-6e9c6af99801)
 
+![Clip_2024-05-28_11-08-03](https://github.com/honmashironeko/rankscan/assets/139044047/134c5fa8-d77b-499b-a8d5-310c35936996)
+
+![Clip_2024-05-28_11-08-14](https://github.com/honmashironeko/rankscan/assets/139044047/c2115a99-fba6-4758-9e2d-42b1a866774e)
 
 # 为爱发电
 
 本项目及其他项目并不要求大家付费，但是应部分师傅好意，因此留下打赏码，如果您觉得工具好用，欢迎大家打赏一下，支持作者~
 
-
-
 # 联系方式
 
+![樱花庄_搜索联合传播样式-标准色版](https://github.com/honmashironeko/rankscan/assets/139044047/968215a8-1b3e-4e43-bbc5-c36a907b3e82)
 
+# 特别鸣谢
 
+感谢以下师傅们为本项目的大力支持！（排名不分先后）
+
+- 夜のとばりの翼
 
 # 更新日志
 
